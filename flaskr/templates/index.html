@@ -42,9 +42,9 @@
                         <table class="w-full border-collapse bg-gray-800 text-left text-sm text-gray-500">
                             <thead class="bg-gray-700">
                             <tr>
-                                <th scope="col" class="px-6 py-4 font-medium text-white">Title</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-white">Name</th>
                                 <th scope="col" class="px-6 py-4 font-medium text-white">Rate</th>
-                                <th scope="col" class="px-6 py-4 font-medium text-white">Type</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-white">Category</th>
                                 <th scope="col" class="px-6 py-4 font-medium text-white">Address</th>
                             </tr>
                             </thead>
@@ -52,7 +52,7 @@
                             {% if items %}
                             {% for item in items %}
                             <tr class="hover:bg-gray-700">
-                                <th class="px-6 py-4 font-medium text-white">{{ item['title'] }}</th>
+                                <th class="px-6 py-4 font-medium text-white">{{ item['name'] }}</th>
                                 <td class="px-6 py-4">
                                     <span class="inline-flex items-center gap-1 rounded-full bg-yellow-50 px-2 py-1 text-xs font-semibold text-yellow-600">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-3 w-3">
@@ -61,7 +61,7 @@
                                         {{ item['rate'] }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">{{ item['type'] }}</td>
+                                <td class="px-6 py-4">{{ item['category'] }}</td>
                                 <td class="px-6 py-4">{{ item['address'] }}</td>
                             </tr>
                             {% endfor %}

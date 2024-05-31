@@ -15,7 +15,7 @@ bp = Blueprint('gMap', __name__)
 def index():
     db = get_db()
     items = db.execute(
-        'SELECT id, title, rate, type, address, created'
+        'SELECT id, name, rate, category, address, created'
         ' FROM item'
         ' ORDER BY created DESC'
     ).fetchall()
@@ -25,7 +25,7 @@ def index():
 def export(path="flaskr", file_name="data.csv"):
     db = get_db()
     items = db.execute(
-        'SELECT id, title, rate, type, address, created'
+        'SELECT id, name, rate, category, address, created'
         ' FROM item'
         ' ORDER BY created DESC'
     ).fetchall()
@@ -46,7 +46,7 @@ def create():
     max_count = total
 
     with sync_playwright() as p:
-        browser = p.chromium.launch()
+        browser = p.chromium.launch(headless=False, slow_mo=50)
         page = browser.new_page()
         page.set_viewport_size(
             {'width': 500, 'height': 1000}
@@ -68,23 +68,23 @@ def create():
             items = []
             count = 0
             for item in soup.find_all('div',{'class': 'Nv2PK THOPZb CpccDe'}):
-                title = item.find('a', {'class': 'hfpxzc'}).get('aria-label')
+                name = item.find('a', {'class': 'hfpxzc'}).get('aria-label')
                 items.append({
-                    'title': title
+                    'name': name
                 })
                 count += 1
                 if count == max_count:
                     break
 
         for detail in items:
-            title = detail['title']
-            found_title = False
-            while not found_title:
+            name = detail['name']
+            found_name = False
+            while not found_name:
                 page.keyboard.press('End')
                 time.sleep(2)
                 try:
-                    page.get_by_label(title).click()
-                    found_title = True
+                    page.get_by_label(name).click()
+                    found_name = True
                     break
                 except Exception:
                     pass
@@ -92,16 +92,16 @@ def create():
             time.sleep(3)
             html = page.inner_html('div.w6VYqd')
             soup = BeautifulSoup(html, 'html.parser')
-            title = soup.find('h1', {'class': 'DUwDvf lfPIob'}).text
-            rate = soup.find('span', {'aria-hidden': 'true'}).text
-            location_type = soup.find('button', {'class': 'DkEaL'}).text
+            name = soup.find('h1', {'class': 'DUwDvf lfPIob'}).text
+            rate = soup.find('div', {'class': 'F7nice'}).text
+            category = soup.find('button', {'class': 'DkEaL'}).text
             address = soup.find('div', {'class': 'Io6YTe fontBodyMedium kR99db'}).text
 
             db = get_db()
             db.execute(
-                'INSERT INTO item (title, rate, type, address)'
+                'INSERT INTO item (name, rate, category, address)'
                 ' VALUES (?, ?, ?, ?)',
-                (title, rate, location_type, address)
+                (name, rate, category, address)
             )
             db.commit()
 
